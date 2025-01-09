@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "lib": ["ESNEXT"],
+    "target": "ESNEXT",
+    "module": "ESNEXT",
+    "moduleDetection": "force",
+    "jsx": "react-jsx",
+    "allowJs": true,
+
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+
+    "skipLibCheck": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+}
+}
