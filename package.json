@@ -1,27 +1,12 @@
 {
   "name": "ai-agent",
   "module": "index.ts",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx tsx index.ts"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/cykj40/ai-agent.git"
-  },
-  "overrides": {
-    "whatwg-url": "^13.0.0"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
-    "@types/bun": "latest",
-    "prettier": "^3.4.2",
-    "typescript": "^5.7.3"
+    "@types/bun": "latest"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
@@ -32,14 +17,9 @@
     "lowdb": "^7.0.1",
     "openai": "^4.70.3",
     "ora": "^8.1.1",
-    "terminal-image": "^1.1.0",
+    "terminal-image": "^3.0.0",
     "tsx": "^4.19.2",
     "uuid": "^11.0.2",
-    "zod": "^3.23.08"
-  },
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/cykj40/ai-agent/issues"
-  },
-  "homepage": "https://github.com/cykj40/ai-agent#readme"
+    "zod": "^3.23.8"
+  }
 }
