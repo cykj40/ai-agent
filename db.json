@@ -1,3 +1,41 @@
 {
-  "messages": []
+  "messages": [
+    {
+      "role": "user",
+      "content": "What is the temprature today?",
+      "id": "97229470-f0cb-47b2-9eed-ff71f1ce1302",
+      "createdAt": 1736694048139
+    },
+    {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_6I3UR3nfF5hhwoaySO81nUWO",
+          "type": "function",
+          "function": {
+            "name": "get_weather",
+            "arguments": "{}"
+          }
+        }
+      ],
+      "refusal": null,
+      "id": "6129646b-47fa-4bd8-a2ea-5df64c8235de",
+      "createdAt": 1736694049149
+    },
+    {
+      "role": "tool",
+      "content": "{\"temperature\":\"22°C\",\"condition\":\"Sunny\"}",
+      "tool_call_id": "call_6I3UR3nfF5hhwoaySO81nUWO",
+      "id": "4fd79cb8-d194-4ecd-b8f9-3706ec9dcdf4",
+      "createdAt": 1736694049167
+    },
+    {
+      "role": "assistant",
+      "content": "The temperature today is 22°C, and the condition is sunny.",
+      "refusal": null,
+      "id": "c0c959ba-9446-4558-8409-0cf93716e35c",
+      "createdAt": 1736694050020
+    }
+  ]
 }

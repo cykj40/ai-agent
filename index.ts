@@ -1,5 +1,8 @@
 import 'dotenv/config'
-import { runLLM } from './src/llm'
+import { z } from 'zod'
+import { runAgent } from './src/agent'
+import type { Tool } from './types'
+
 const userMessage = process.argv[2]
 
 if (!userMessage) {
@@ -7,7 +10,24 @@ if (!userMessage) {
     process.exit(1)
 }
 
-const response = await runLLM({ userMessage })
+const getWeather = async () => {
+    return { temperature: "22°C", condition: "Sunny" }
+}
 
+const weatherTool: Tool = {
+    type: 'function',
+    function: {
+        name: 'get_weather',
+        description: 'Get the weather for a given location',
+        parameters: {
+            type: 'object',
+            properties: {},
+            required: []
+        }
+    },
+    implementation: getWeather
+}
+
+const response = await runAgent({ userMessage, tools: [weatherTool] })
 console.log(response)
 
