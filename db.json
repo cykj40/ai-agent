@@ -2,40 +2,64 @@
   "messages": [
     {
       "role": "user",
-      "content": "What is the temprature today?",
-      "id": "97229470-f0cb-47b2-9eed-ff71f1ce1302",
-      "createdAt": 1736694048139
+      "content": "Find another random post from reddit and make a random dad joke from it in the form of a meme pic",
+      "id": "05d63aca-68ec-4784-ae64-bec6f53a4bbf",
+      "createdAt": 1736947227796
     },
     {
       "role": "assistant",
       "content": null,
       "tool_calls": [
         {
-          "id": "call_6I3UR3nfF5hhwoaySO81nUWO",
+          "id": "call_WAqIM0lBR1RNiG5Snsgv33MK",
           "type": "function",
           "function": {
-            "name": "get_weather",
+            "name": "dad_joke",
             "arguments": "{}"
           }
         }
       ],
       "refusal": null,
-      "id": "6129646b-47fa-4bd8-a2ea-5df64c8235de",
-      "createdAt": 1736694049149
+      "id": "cc5b0748-3031-447e-a518-ef0f5905b06a",
+      "createdAt": 1736947228977
     },
     {
       "role": "tool",
-      "content": "{\"temperature\":\"22°C\",\"condition\":\"Sunny\"}",
-      "tool_call_id": "call_6I3UR3nfF5hhwoaySO81nUWO",
-      "id": "4fd79cb8-d194-4ecd-b8f9-3706ec9dcdf4",
-      "createdAt": 1736694049167
+      "content": "When do doctors get angry? When they run out of patients.",
+      "tool_call_id": "call_WAqIM0lBR1RNiG5Snsgv33MK",
+      "id": "c5c18d4d-5f95-48cd-ba46-12c948224489",
+      "createdAt": 1736947229128
     },
     {
       "role": "assistant",
-      "content": "The temperature today is 22°C, and the condition is sunny.",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_6Osdbm7W4QDVhVicY0377xvA",
+          "type": "function",
+          "function": {
+            "name": "generateImage",
+            "arguments": "{\"prompt\":\"Meme image of an angry doctor throwing his clipboard away with the caption: 'When do doctors get angry? When they run out of patients.'\"}"
+          }
+        }
+      ],
       "refusal": null,
-      "id": "c0c959ba-9446-4558-8409-0cf93716e35c",
-      "createdAt": 1736694050020
+      "id": "0b00b30f-8560-4e0b-ba55-ccc04213b06a",
+      "createdAt": 1736947231043
+    },
+    {
+      "role": "tool",
+      "content": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-8hscLwBAGafhRzkltpKyj9HO/user-4DMkqMPfn8RnQXlw2BN87UJ4/img-Wzk5hGw6kDOYOTEqMN6awhDs.png?st=2025-01-15T12%3A20%3A42Z&se=2025-01-15T14%3A20%3A42Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-01-15T00%3A20%3A17Z&ske=2025-01-16T00%3A20%3A17Z&sks=b&skv=2024-08-04&sig=DIgivjJmQyNBAw8zHktuOO03kC2yJ7gptE2WPu9VzIE%3D",
+      "tool_call_id": "call_6Osdbm7W4QDVhVicY0377xvA",
+      "id": "94ef1c09-b0b6-455f-be76-2f49e3d9bde4",
+      "createdAt": 1736947241235
+    },
+    {
+      "role": "assistant",
+      "content": "Here's a meme based on a random dad joke, featuring an angry doctor:\n\n![When do doctors get angry? When they run out of patients.](https://oaidalleapiprodscus.blob.core.windows.net/private/org-8hscLwBAGafhRzkltpKyj9HO/user-4DMkqMPfn8RnQXlw2BN87UJ4/img-Wzk5hGw6kDOYOTEqMN6awhDs.png?st=2025-01-15T12%3A20%3A42Z&se=2025-01-15T14%3A20%3A42Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-01-15T00%3A20%3A17Z&ske=2025-01-16T00%3A20%3A17Z&sks=b&skv=2024-08-04&sig=DIgivjJmQyNBAw8zHktuOO03kC2yJ7gptE2WPu9VzIE%3D)",
+      "refusal": null,
+      "id": "8c9760f3-3aaf-464c-867f-a164234abb47",
+      "createdAt": 1736947254205
     }
   ]
 }

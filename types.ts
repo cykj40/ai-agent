@@ -1,13 +1,13 @@
-import type { OpenAI } from 'openai'
+import type { ChatCompletionMessageParam } from 'openai/resources/chat/completions'
 
-export type AIMessage =
-    | OpenAI.Chat.Completions.ChatCompletionMessageParam
-    | { role: 'user'; content: string }
-    | { role: 'tool'; content: string; tool_call_id: string }
+export type AIMessage = ChatCompletionMessageParam
 
-export interface ToolFn<A = any, T = any> {
-    (input: { userMessage: string; toolArgs: A }): Promise<T>
+export type ToolInput = {
+    userMessage: string;
+    toolArgs: Record<string, any>;
 }
+
+export type ToolFn = (input: ToolInput) => Promise<any>
 
 export interface Tool {
     type: 'function';
@@ -20,5 +20,5 @@ export interface Tool {
             required?: string[];
         };
     };
-    implementation: (...args: any[]) => Promise<any>;
+    implementation: ToolFn;
 }
