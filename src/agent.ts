@@ -1,39 +1,36 @@
-import type { AIMessage } from '../types'
-import { addMessages, getMessages, clearMessages } from './memory'
+import type { AIMessage, Tool, ToolCall } from '../types'
+import { addMessages, getMessages } from './memory'
 import { runLLM } from './llm'
 import { showLoader } from './ui'
 import { runTool } from './toolRunner'
+
+const isMessageWithTools = (message: AIMessage): message is AIMessage & { tool_calls: ToolCall[] } => {
+    return 'tool_calls' in message && Array.isArray(message.tool_calls)
+}
 
 export const runAgent = async ({
     userMessage,
     tools,
 }: {
     userMessage: string,
-    tools: any[],
+    tools: Tool[],
 }): Promise<AIMessage[]> => {
-    // Start fresh
-    await clearMessages()
     await addMessages([{ role: 'user', content: userMessage }])
     const loader = showLoader('🤔')
 
     try {
         while (true) {
             const messages = await getMessages()
-            const response = await runLLM({
-                messages,
-                tools,
-            })
+            const response = await runLLM({ messages, tools })
 
-            if (!response.tool_calls) {
+            if (!isMessageWithTools(response)) {
                 await addMessages([response])
                 break
             }
 
-            // Add assistant response with tool calls
             await addMessages([response])
 
-            // Process all tool calls before continuing
-            const toolPromises = response.tool_calls.map(async (toolCall) => {
+            const toolPromises = response.tool_calls.map(async (toolCall: ToolCall) => {
                 const result = await runTool(toolCall, userMessage)
                 return {
                     role: 'tool',

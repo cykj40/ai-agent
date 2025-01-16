@@ -1,9 +1,5 @@
 import type { Tool, ToolInput } from '../../types'
 
-export const reddit = async (input: ToolInput) => {
-    return "Reddit post content"
-}
-
 export const redditToolDefinition: Tool = {
     type: 'function',
     function: {
@@ -20,5 +16,8 @@ export const redditToolDefinition: Tool = {
             required: ['subreddit']
         }
     },
-    implementation: reddit
+    implementation: async (input: ToolInput): Promise<string> => {
+        // For now, just return a mock response
+        return "Here's something interesting from Reddit!"
+    }
 }

@@ -1,15 +1,23 @@
-import type { ChatCompletionMessageParam } from 'openai/resources/chat/completions'
+import type { ChatCompletionMessageParam, ChatCompletionMessageToolCall } from 'openai/resources/chat/completions'
 
-export type AIMessage = ChatCompletionMessageParam
+export type ToolCall = ChatCompletionMessageToolCall
 
-export type ToolInput = {
-    userMessage: string;
-    toolArgs: Record<string, any>;
+export type AIMessageWithTools = {
+    role: 'assistant';
+    content: string | null;
+    tool_calls?: ToolCall[];
 }
 
-export type ToolFn = (input: ToolInput) => Promise<any>
+export type AIMessage = ChatCompletionMessageParam | AIMessageWithTools
 
-export interface Tool {
+export type ToolInput<T = any> = {
+    userMessage: string;
+    toolArgs: T;
+}
+
+export type ToolFn<TArgs = any, TResult = string> = (input: ToolInput<TArgs>) => Promise<TResult>
+
+export type Tool = {
     type: 'function';
     function: {
         name: string;
@@ -21,4 +29,30 @@ export interface Tool {
         };
     };
     implementation: ToolFn;
+}
+
+export type Run = {
+    input: any;
+    output: any;
+    expected: any;
+    scores: {
+        name: string;
+        score: number;
+    }[];
+    createdAt?: string;
+}
+
+export type Set = {
+    runs: Run[];
+    score: number;
+    createdAt: string;
+}
+
+export type Experiment = {
+    name: string;
+    sets: Set[];
+}
+
+export type Results = {
+    experiments: Experiment[];
 }

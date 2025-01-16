@@ -1,6 +1,11 @@
 import type { Tool, ToolInput } from '../../types'
-import { z } from 'zod'
 import fetch from 'node-fetch'
+
+interface DadJokeResponse {
+    joke: string;
+    id: string;
+    status: number;
+}
 
 export const dadJokeToolDefinition: Tool = {
     type: 'function',
@@ -18,7 +23,8 @@ export const dadJokeToolDefinition: Tool = {
                 'Accept': 'application/json'
             }
         })
-        return (await res.json()).joke
+        const data = await res.json() as DadJokeResponse
+        return data.joke
     }
 }
 

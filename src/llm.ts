@@ -1,22 +1,25 @@
+import OpenAI from 'openai'
 import type { AIMessage } from '../types'
-import { openai } from './ai'
+import type { Tool } from '../types'
+
+const openai = new OpenAI()
 
 export const runLLM = async ({
     messages,
-    tools,
+    tools = [],
 }: {
-    messages: AIMessage[],
-    tools: any[],
-}) => {
+    messages: AIMessage[];
+    tools?: Tool[];
+}): Promise<AIMessage> => {
     const response = await openai.chat.completions.create({
-        model: 'gpt-4-turbo-preview',
-        temperature: 0.1,
+        model: 'gpt-4',
         messages,
-        tools,
-        tool_choice: 'auto',
-        parallel_tool_calls: false,
-    });
+        tools: tools.map(tool => ({
+            type: tool.type,
+            function: tool.function
+        })),
+    })
 
-    return response.choices[0].message;
-};
+    return response.choices[0].message
+}
 
