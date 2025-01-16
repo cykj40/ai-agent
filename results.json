@@ -1,3 +1,361 @@
 {
-  "experiments": []
+  "experiments": [
+    {
+      "name": "reddit",
+      "sets": [
+        {
+          "runs": [
+            {
+              "input": "find me something interesting on reddit",
+              "output": {
+                "role": "assistant",
+                "content": null,
+                "tool_calls": [
+                  {
+                    "id": "call_T6imIId63HarOuPMdPfa1q2f",
+                    "type": "function",
+                    "function": {
+                      "name": "reddit",
+                      "arguments": "{\n\"subreddit\": \"interestingasfuck\"\n}"
+                    }
+                  }
+                ],
+                "refusal": null
+              },
+              "expected": {
+                "role": "assistant",
+                "content": null,
+                "tool_calls": [
+                  {
+                    "id": "test-id",
+                    "type": "function",
+                    "function": {
+                      "name": "reddit",
+                      "arguments": "{}"
+                    }
+                  }
+                ]
+              },
+              "scores": [
+                {
+                  "name": "ToolCallMatch",
+                  "score": 1
+                }
+              ],
+              "createdAt": "2025-01-16T16:01:25.636Z"
+            }
+          ],
+          "score": 1,
+          "createdAt": "2025-01-16T16:01:25.636Z"
+        },
+        {
+          "runs": [
+            {
+              "input": "find me something interesting on reddit",
+              "output": {
+                "role": "assistant",
+                "content": null,
+                "tool_calls": [
+                  {
+                    "id": "call_c3Jf4hanHUuY0xw5KxnD9FOa",
+                    "type": "function",
+                    "function": {
+                      "name": "reddit",
+                      "arguments": "{\n  \"subreddit\": \"interestingasfuck\"\n}"
+                    }
+                  }
+                ],
+                "refusal": null
+              },
+              "expected": {
+                "role": "assistant",
+                "content": null,
+                "tool_calls": [
+                  {
+                    "id": "test-id",
+                    "type": "function",
+                    "function": {
+                      "name": "reddit",
+                      "arguments": "{}"
+                    }
+                  }
+                ]
+              },
+              "scores": [
+                {
+                  "name": "ToolCallMatch",
+                  "score": 1
+                }
+              ],
+              "createdAt": "2025-01-16T16:08:16.610Z"
+            }
+          ],
+          "score": 1,
+          "createdAt": "2025-01-16T16:08:16.610Z"
+        },
+        {
+          "runs": [
+            {
+              "input": "find me something interesting on reddit",
+              "output": {
+                "role": "assistant",
+                "content": null,
+                "tool_calls": [
+                  {
+                    "id": "call_ErOBYMWAcshu2zilMJlZDfs6",
+                    "type": "function",
+                    "function": {
+                      "name": "reddit",
+                      "arguments": "{\n  \"subreddit\": \"interestingasfuck\"\n}"
+                    }
+                  }
+                ],
+                "refusal": null
+              },
+              "expected": {
+                "role": "assistant",
+                "content": null,
+                "tool_calls": [
+                  {
+                    "id": "test-id",
+                    "type": "function",
+                    "function": {
+                      "name": "reddit",
+                      "arguments": "{}"
+                    }
+                  }
+                ]
+              },
+              "scores": [
+                {
+                  "name": "ToolCallMatch",
+                  "score": 1
+                }
+              ],
+              "createdAt": "2025-01-16T16:13:41.895Z"
+            }
+          ],
+          "score": 1,
+          "createdAt": "2025-01-16T16:13:41.896Z"
+        }
+      ]
+    },
+    {
+      "name": "generateImage",
+      "sets": [
+        {
+          "runs": [
+            {
+              "input": "Generate an image of a sunset",
+              "output": {
+                "role": "assistant",
+                "content": null,
+                "tool_calls": [
+                  {
+                    "id": "call_037O3kIAYRBSRVcz22iauax2",
+                    "type": "function",
+                    "function": {
+                      "name": "generate_image",
+                      "arguments": "{\n  \"prompt\": \"A beautiful sunset with vibrant colors spreading across the sky\"\n}"
+                    }
+                  }
+                ],
+                "refusal": null
+              },
+              "expected": {
+                "role": "assistant",
+                "content": null,
+                "tool_calls": [
+                  {
+                    "id": "test-id",
+                    "type": "function",
+                    "function": {
+                      "name": "generate_image",
+                      "arguments": "{}"
+                    }
+                  }
+                ]
+              },
+              "scores": [
+                {
+                  "name": "ToolCallMatch",
+                  "score": 1
+                }
+              ],
+              "createdAt": "2025-01-16T16:21:20.005Z"
+            },
+            {
+              "input": "take a photo of the sunset",
+              "output": {
+                "role": "assistant",
+                "content": null,
+                "tool_calls": [
+                  {
+                    "id": "call_OigBL10tVBslVKsPDvqLBEIK",
+                    "type": "function",
+                    "function": {
+                      "name": "generate_image",
+                      "arguments": "{\n  \"prompt\": \"a beautiful sunset\"\n}"
+                    }
+                  }
+                ],
+                "refusal": null
+              },
+              "expected": {
+                "role": "assistant",
+                "content": null,
+                "tool_calls": [
+                  {
+                    "id": "test-id",
+                    "type": "function",
+                    "function": {
+                      "name": "generate_image",
+                      "arguments": "{}"
+                    }
+                  }
+                ]
+              },
+              "scores": [
+                {
+                  "name": "ToolCallMatch",
+                  "score": 1
+                }
+              ],
+              "createdAt": "2025-01-16T16:21:20.006Z"
+            }
+          ],
+          "score": 1,
+          "createdAt": "2025-01-16T16:21:20.006Z"
+        }
+      ]
+    },
+    {
+      "name": "allTools",
+      "sets": [
+        {
+          "runs": [
+            {
+              "input": "find me something interesting on reddit",
+              "output": {
+                "role": "assistant",
+                "content": null,
+                "tool_calls": [
+                  {
+                    "id": "call_qyRY2lUknd3etpAULja0rQh9",
+                    "type": "function",
+                    "function": {
+                      "name": "reddit",
+                      "arguments": "{\n  \"subreddit\": \"interestingasfuck\"\n}"
+                    }
+                  }
+                ],
+                "refusal": null
+              },
+              "expected": {
+                "role": "assistant",
+                "content": null,
+                "tool_calls": [
+                  {
+                    "id": "test-id",
+                    "type": "function",
+                    "function": {
+                      "name": "reddit",
+                      "arguments": "{}"
+                    }
+                  }
+                ]
+              },
+              "scores": [
+                {
+                  "name": "ToolCallMatch",
+                  "score": 1
+                }
+              ],
+              "createdAt": "2025-01-16T16:30:39.443Z"
+            },
+            {
+              "input": "tell me a dad joke",
+              "output": {
+                "role": "assistant",
+                "content": null,
+                "tool_calls": [
+                  {
+                    "id": "call_mtBgJX9VchmVM8QN6mAa1x8S",
+                    "type": "function",
+                    "function": {
+                      "name": "dad_joke",
+                      "arguments": "{}"
+                    }
+                  }
+                ],
+                "refusal": null
+              },
+              "expected": {
+                "role": "assistant",
+                "content": null,
+                "tool_calls": [
+                  {
+                    "id": "test-id",
+                    "type": "function",
+                    "function": {
+                      "name": "dad_joke",
+                      "arguments": "{}"
+                    }
+                  }
+                ]
+              },
+              "scores": [
+                {
+                  "name": "ToolCallMatch",
+                  "score": 1
+                }
+              ],
+              "createdAt": "2025-01-16T16:30:39.444Z"
+            },
+            {
+              "input": "generate an image of a sunset",
+              "output": {
+                "role": "assistant",
+                "content": null,
+                "tool_calls": [
+                  {
+                    "id": "call_iQ97luPBh1p7AaRK72W7m2j5",
+                    "type": "function",
+                    "function": {
+                      "name": "generate_image",
+                      "arguments": "{\n  \"prompt\": \"a beautiful sunset\"\n}"
+                    }
+                  }
+                ],
+                "refusal": null
+              },
+              "expected": {
+                "role": "assistant",
+                "content": null,
+                "tool_calls": [
+                  {
+                    "id": "test-id",
+                    "type": "function",
+                    "function": {
+                      "name": "generate_image",
+                      "arguments": "{}"
+                    }
+                  }
+                ]
+              },
+              "scores": [
+                {
+                  "name": "ToolCallMatch",
+                  "score": 1
+                }
+              ],
+              "createdAt": "2025-01-16T16:30:39.444Z"
+            }
+          ],
+          "score": 1,
+          "createdAt": "2025-01-16T16:30:39.444Z"
+        }
+      ]
+    }
+  ]
 }

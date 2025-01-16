@@ -98,31 +98,45 @@ export const saveSet = async (
 
 export const runEval = async <T = any>(
     experiment: string,
-    {
-        task,
-        data,
-        scorers,
-    }: {
-        task: (input: any) => Promise<T | TaskResult<T>>;
-        data: { input: any; expected?: T; reference?: string | string[] }[];
-        scorers: Scorer<T, any>[];
+    config: {
+        task: (input: any) => Promise<T | TaskResult<T>>
+        data: { input: any; expected?: T; reference?: string | string[] }[]
+        scorers: Scorer<T, any>[]
     }
 ) => {
     const results = await Promise.all(
-        data.map(async ({ input, expected, reference }) => {
-            const result = await task(input)
+        config.data.map(async ({ input, expected, reference }) => {
+            const result = await config.task(input)
+            console.log('Run result:', {
+                input,
+                output: result,
+                expected,
+                scores: await Promise.all(
+                    config.scorers.map(async (scorer) => {
+                        const score = await scorer({
+                            input,
+                            output: result,
+                            expected,
+                            reference,
+                        })
+                        return score
+                    })
+                )
+            })
+
             let context: string | string[] | undefined
-            let output: any
+            let output: T
 
             if (result && typeof result === 'object' && 'context' in result) {
-                context = result.context
-                output = result.response ?? result.output ?? result
+                const taskResult = result as TaskResult<T>
+                context = taskResult.context
+                output = taskResult.output ?? result as T
             } else {
-                output = result
+                output = result as T
             }
 
             const scores = await Promise.all(
-                scorers.map(async (scorer) => {
+                config.scorers.map(async (scorer) => {
                     const score = await scorer({
                         input,
                         output,
