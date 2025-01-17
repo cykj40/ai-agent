@@ -2,57 +2,51 @@ import type { ChatCompletionMessageParam, ChatCompletionMessageToolCall } from '
 
 export type ToolCall = ChatCompletionMessageToolCall
 
-export type AIMessageWithTools = {
-    role: 'assistant';
-    content: string | null;
-    tool_calls?: ToolCall[];
-}
-
-export type AIMessage = ChatCompletionMessageParam | AIMessageWithTools
-
-export type ToolInput<T = any> = {
-    userMessage: string;
-    toolArgs: T;
-}
-
-export type ToolFn<TArgs = any, TResult = string> = (input: ToolInput<TArgs>) => Promise<TResult>
-
 export type Tool = {
-    type: 'function';
+    type: 'function'
     function: {
-        name: string;
-        description: string;
+        name: string
+        description: string
         parameters: {
-            type: 'object';
-            properties: Record<string, any>;
-            required?: string[];
-        };
-    };
-    implementation: ToolFn;
+            type: 'object'
+            properties: Record<string, unknown>
+            required?: string[]
+        }
+    }
+    implementation: ToolFn<any, any>
 }
+
+export type ToolFn<Args, Result> = (input: {
+    toolArgs: Args
+    userMessage: string
+}) => Promise<Result>
+
+export type AIMessage = ChatCompletionMessageParam
+
+export type Dict = Record<string, any>
 
 export type Run = {
-    input: any;
-    output: any;
-    expected: any;
+    input: any
+    output: any
+    expected: any
     scores: {
-        name: string;
-        score: number;
-    }[];
-    createdAt?: string;
+        name: string
+        score: number
+    }[]
+    createdAt?: string
 }
 
 export type Set = {
-    runs: Run[];
-    score: number;
-    createdAt: string;
+    runs: Run[]
+    score: number
+    createdAt: string
 }
 
 export type Experiment = {
-    name: string;
-    sets: Set[];
+    name: string
+    sets: Set[]
 }
 
 export type Results = {
-    experiments: Experiment[];
+    experiments: Experiment[]
 }

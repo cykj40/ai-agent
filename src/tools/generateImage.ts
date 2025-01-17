@@ -1,32 +1,19 @@
-import type { Tool, ToolFn } from '../../types'
-import { z } from 'zod'
+import type { Tool } from '../../types'
 import { openai } from '../ai'
 
-const parameters = z.object({
-    prompt: z
-        .string()
-        .describe(
-            `prompt for the image. Be sure to consider the user's original message when making the prompt. If you are unsure, then as the user to provide more details.`
-        ),
-})
-
-type Args = z.infer<typeof parameters>
-
-export const generateImage: ToolFn<Args, string> = async ({
-    toolArgs,
-    userMessage,
-}: {
-    toolArgs: Args;
-    userMessage: string;
-}) => {
-    const response = await openai.images.generate({
-        model: 'dall-e-3',
-        prompt: toolArgs.prompt,
-        n: 1,
-        size: '1024x1024',
-    })
-
-    return response.data[0].url!
+const generateImage = async ({ toolArgs }: { toolArgs: { prompt: string } }) => {
+    try {
+        const response = await openai.images.generate({
+            model: "dall-e-3",
+            prompt: toolArgs.prompt,
+            n: 1,
+            size: "1024x1024",
+        })
+        return response.data[0].url || 'Failed to generate image'
+    } catch (error) {
+        console.error('Image generation error:', error)
+        return 'Failed to generate image'
+    }
 }
 
 export const generateImageToolDefinition: Tool = {
@@ -39,7 +26,7 @@ export const generateImageToolDefinition: Tool = {
             properties: {
                 prompt: {
                     type: 'string',
-                    description: parameters.shape.prompt.description,
+                    description: 'Detailed description of the image to generate'
                 }
             },
             required: ['prompt']

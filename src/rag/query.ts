@@ -1,47 +1,39 @@
-import { Index as UpstashIndex } from '@upstash/vector'
+import { Index } from '@upstash/vector'
+import { openai } from '../ai'
 
-const index = new UpstashIndex({
-    url: process.env.UPSTASH_VECTOR_REST_URL as string,
-    token: process.env.UPSTASH_VECTOR_REST_TOKEN as string,
+const index = new Index({
+    url: process.env.UPSTASH_VECTOR_REST_URL!,
+    token: process.env.UPSTASH_VECTOR_REST_TOKEN!,
 })
 
-type MovieMetaData = {
-    title?: string
-    year?: number
-    genre?: string
-    director?: string
-    actor?: string
-    rating?: number
-    votes?: number
-    revenue?: number
-    metascore?: number
-}
+export async function queryMovies(query: string) {
+    try {
+        // Get embeddings for the query
+        const response = await openai.embeddings.create({
+            model: 'text-embedding-3-small',
+            input: query,
+            dimensions: 1024
+        })
+        const embedding = response.data[0].embedding
 
-export const queryMovies = async (
-    query: string,
-    filters?: Partial<MovieMetaData>,
-    topK: number = 5
-) => {
-    // Build filter string if filters provided
-    let filterStr = ''
-    if (filters) {
-        const filterParts = Object.entries(filters)
-            .filter(([_, value]) => value !== undefined)
-            .map(([key, value]) => `${key}='${value}'`)
+        // Search for similar movies
+        const results = await index.query({
+            vector: embedding,
+            topK: 5,
+            includeMetadata: true,
+        })
 
-        if (filterParts.length > 0) {
-            filterStr = filterParts.join(' AND ')
-        }
+        return results.map(result => ({
+            title: result.metadata?.title,
+            year: result.metadata?.year,
+            genre: result.metadata?.genre,
+            director: result.metadata?.director,
+            actors: result.metadata?.actors,
+            rating: result.metadata?.rating,
+            score: result.score,
+        }))
+    } catch (error) {
+        console.error('Failed to query movies:', error)
+        throw error
     }
-
-    // Query the vector store
-    const results = await index.query({
-        data: query,
-        topK,
-        filter: filterStr || undefined,
-        includeMetadata: true,
-        includeData: true,
-    })
-
-    return results
 }

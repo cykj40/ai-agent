@@ -1,13 +1,9 @@
-import { dadJokeToolDefinition } from './dadJoke'
 import { generateImageToolDefinition } from './generateImage'
-import { redditToolDefinition } from './reddit'
+import { movieSearchToolDefinition } from './movieSearch'
+import type { Tool } from '../../types'
 
-export const tools = [
+export const tools: Tool[] = [
     generateImageToolDefinition,
-    dadJokeToolDefinition,
-    redditToolDefinition
+    movieSearchToolDefinition,
 ]
 
-export { generateImageToolDefinition } from './generateImage'
-export { dadJokeToolDefinition } from './dadJoke'
-export { redditToolDefinition } from './reddit'
