@@ -12,6 +12,7 @@ const movieSearch = async ({ toolArgs }: { toolArgs: { query: string } }) => {
 }
 
 export const movieSearchToolDefinition: Tool = {
+    name: 'search_movies',
     type: 'function',
     function: {
         name: 'search_movies',

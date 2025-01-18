@@ -17,6 +17,7 @@ const generateImage = async ({ toolArgs }: { toolArgs: { prompt: string } }) => 
 }
 
 export const generateImageToolDefinition: Tool = {
+    name: 'generate_image',
     type: 'function',
     function: {
         name: 'generate_image',

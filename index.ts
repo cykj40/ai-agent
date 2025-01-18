@@ -1,9 +1,7 @@
 import 'dotenv/config'
 import { z } from 'zod'
 import { runAgent } from './src/agent'
-import { dadJokeToolDefinition } from './src/tools/dadJoke'
-import { generateImageToolDefinition } from './src/tools/generateImage'
-import type { Tool } from './types'
+import { tools } from './src/tools'
 
 const main = async () => {
     console.log('Starting application...')
@@ -15,7 +13,10 @@ const main = async () => {
 
     console.log('User message:', userMessage)
     try {
-        const response = await runAgent(userMessage)
+        const response = await runAgent({
+            userMessage,
+            tools
+        })
         console.log('Agent response:', response)
     } catch (error) {
         console.error('Failed to run agent:', error)

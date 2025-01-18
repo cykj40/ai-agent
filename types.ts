@@ -1,8 +1,9 @@
-import type { ChatCompletionMessageParam, ChatCompletionMessageToolCall } from 'openai/resources/chat/completions'
+import type { ChatCompletionMessage, ChatCompletionMessageToolCall } from 'openai/resources/chat/completions'
 
 export type ToolCall = ChatCompletionMessageToolCall
 
 export type Tool = {
+    name: string
     type: 'function'
     function: {
         name: string
@@ -21,7 +22,12 @@ export type ToolFn<Args, Result> = (input: {
     userMessage: string
 }) => Promise<Result>
 
-export type AIMessage = ChatCompletionMessageParam
+export type AIMessage = {
+    role: 'user' | 'assistant' | 'system' | 'tool'
+    content: string | null
+    tool_calls?: ChatCompletionMessageToolCall[]
+    tool_call_id?: string
+}
 
 export type Dict = Record<string, any>
 

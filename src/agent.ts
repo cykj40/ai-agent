@@ -1,61 +1,134 @@
-import { openai } from './ai'
-import { addMessages, getMessages, clearMessages } from './memory'
+import type { AIMessage, Tool } from '../types'
+import { addMessages, getMessages, saveToolResponse } from './memory'
+import { runLLM } from './llm'
+import { showLoader, logMessage } from './ui'
 import { runTool } from './toolRunner'
-import { tools } from './tools'
-import type { ChatCompletionMessageParam } from 'openai/resources/chat/completions'
+import { generateImageToolDefinition } from './tools/generateImage'
+import * as readline from 'readline'
+import type { ChatCompletionMessage } from 'openai/resources/chat/completions'
 
-export const runAgent = async (userMessage: string) => {
-    if (typeof userMessage !== 'string') {
-        throw new Error('User message must be a string')
+const convertToAIMessage = (msg: ChatCompletionMessage): AIMessage => {
+    const base = {
+        role: msg.role,
+        content: msg.content ?? '',
+        tool_calls: msg.tool_calls
     }
 
-    await clearMessages()
-
-    const systemMessage: ChatCompletionMessageParam = {
-        role: 'system',
-        content: 'You are a helpful assistant that can search for movies and generate images. When asked about movies, use the search_movies tool first to get information. When asked to create images or posters, use the generate_image tool with a detailed prompt.'
-    }
-
-    const userMsg: ChatCompletionMessageParam = {
-        role: 'user',
-        content: userMessage.toString()
-    }
-
-    // Debug log
-    console.log('System message:', systemMessage)
-    console.log('User message:', userMsg)
-
-    const response = await openai.chat.completions.create({
-        model: 'gpt-4-1106-preview',
-        messages: [systemMessage, userMsg],
-        tools: tools.map(tool => ({
-            type: tool.type,
-            function: tool.function,
-        })),
-    })
-
-    const message = response.choices[0].message
-    await addMessages([systemMessage, userMsg, message])
-
-    if (message.tool_calls) {
-        for (const toolCall of message.tool_calls) {
-            const result = await runTool(toolCall, userMessage)
-            await addMessages([{
-                role: 'tool',
-                content: result,
-                tool_call_id: toolCall.id
-            }])
+    if ('tool_call_id' in msg) {
+        return {
+            ...base,
+            tool_call_id: (msg as any).tool_call_id
         }
+    }
 
-        const messages = await getMessages()
-        const finalResponse = await openai.chat.completions.create({
-            model: 'gpt-4-1106-preview',
-            messages,
+    return base
+}
+
+const getUserInput = async (prompt: string): Promise<string> => {
+    return new Promise(resolve => {
+        const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout
         })
 
-        await addMessages([finalResponse.choices[0].message])
-        return finalResponse.choices[0].message
-    }
+        rl.question(prompt, (answer) => {
+            rl.close()
+            resolve(answer.toLowerCase().trim())
+        })
+    })
+}
 
-    return message
+export const runAgent = async ({
+    userMessage,
+    tools,
+}: {
+    userMessage: string
+    tools: Tool[]
+}) => {
+    try {
+        await addMessages([{ role: 'user', content: userMessage }])
+        let loader = showLoader('Thinking...')
+
+        try {
+            const history = await getMessages()
+            const response = await runLLM({ messages: history, tools })
+            loader.stop()
+
+            if (response.tool_calls?.[0]?.function.name === generateImageToolDefinition.function.name) {
+                const answer = await getUserInput('\nDo you want me to generate this image? (yes/no)\n> ')
+
+                if (answer.startsWith('y')) {
+                    loader = showLoader('Generating image...')
+                    const toolCall = response.tool_calls[0]
+                    const toolResponse = await runTool(toolCall, userMessage)
+                    loader.stop()
+
+                    await addMessages([
+                        convertToAIMessage(response),
+                        {
+                            role: 'tool',
+                            content: toolResponse,
+                            tool_call_id: toolCall.id
+                        }
+                    ])
+                    console.log('\nImage URL:', toolResponse)
+                } else {
+                    await addMessages([
+                        convertToAIMessage(response),
+                        {
+                            role: 'tool',
+                            content: 'User did not approve image generation.',
+                            tool_call_id: response.tool_calls[0].id
+                        }
+                    ])
+                    console.log('\nImage generation cancelled.')
+                }
+            } else {
+                await addMessages([convertToAIMessage(response)])
+                if (response.content) {
+                    logMessage(response)
+                }
+            }
+
+            return getMessages()
+        } finally {
+            loader.stop()
+        }
+    } catch (error) {
+        console.error('Error:', error)
+        throw error
+    }
+}
+
+export const runAgentEval = async ({
+    userMessage,
+    tools,
+}: {
+    userMessage: string
+    tools: any[]
+}) => {
+    let messages: AIMessage[] = [{ role: 'user', content: userMessage }]
+
+    while (true) {
+        const response = await runLLM({ messages, tools })
+        messages = [...messages, response]
+
+        if (response.content) {
+            return messages
+        }
+
+        if (response.tool_calls) {
+            const toolCall = response.tool_calls[0]
+
+            if (toolCall.function.name === generateImageToolDefinition.name) {
+                return messages
+            }
+
+            const toolResponse = await runTool(toolCall, userMessage)
+            messages = [
+                ...messages,
+                { role: 'tool', content: toolResponse, tool_call_id: toolCall.id },
+            ]
+        }
+    }
 }
