@@ -10,7 +10,9 @@
   "devDependencies": {
     "@types/node": "^20.0.0",
     "@types/uuid": "^9.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "@types/node-fetch": "^2.6.11",
+    "ts-node": "^10.9.2"
   },
   "dependencies": {
     "@upstash/vector": "^1.1.7",
