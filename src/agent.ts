@@ -45,57 +45,32 @@ export const runAgent = async ({
     userMessage: string
     tools: Tool[]
 }) => {
+    await addMessages([{ role: 'user', content: userMessage }])
+    const loader = showLoader('Thinking...')
+
     try {
-        await addMessages([{ role: 'user', content: userMessage }])
-        let loader = showLoader('Thinking...')
+        const history = await getMessages()
+        const response = await runLLM({ messages: history, tools })
 
-        try {
-            const history = await getMessages()
-            const response = await runLLM({ messages: history, tools })
-            loader.stop()
+        await addMessages([response])
 
-            if (response.tool_calls?.[0]?.function.name === generateImageToolDefinition.function.name) {
-                const answer = await getUserInput('\nDo you want me to generate this image? (yes/no)\n> ')
+        if (response.tool_calls) {
+            const toolCall = response.tool_calls[0]
+            loader.update(`Running ${toolCall.function.name}...`)
+            const toolResponse = await runTool(toolCall, userMessage)
+            await saveToolResponse(toolCall.id, toolResponse)
 
-                if (answer.startsWith('y')) {
-                    loader = showLoader('Generating image...')
-                    const toolCall = response.tool_calls[0]
-                    const toolResponse = await runTool(toolCall, userMessage)
-                    loader.stop()
-
-                    await addMessages([
-                        convertToAIMessage(response),
-                        {
-                            role: 'tool',
-                            content: toolResponse,
-                            tool_call_id: toolCall.id
-                        }
-                    ])
-                    console.log('\nImage URL:', toolResponse)
-                } else {
-                    await addMessages([
-                        convertToAIMessage(response),
-                        {
-                            role: 'tool',
-                            content: 'User did not approve image generation.',
-                            tool_call_id: response.tool_calls[0].id
-                        }
-                    ])
-                    console.log('\nImage generation cancelled.')
-                }
-            } else {
-                await addMessages([convertToAIMessage(response)])
-                if (response.content) {
-                    logMessage(response)
-                }
-            }
-
-            return getMessages()
-        } finally {
-            loader.stop()
+            // Get final response after tool use
+            const finalHistory = await getMessages()
+            const finalResponse = await runLLM({ messages: finalHistory, tools })
+            await addMessages([finalResponse])
         }
+
+        loader.stop()
+        return getMessages()
     } catch (error) {
-        console.error('Error:', error)
+        loader.stop()
+        console.error('Agent Error:', error)
         throw error
     }
 }
